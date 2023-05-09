@@ -39,8 +39,6 @@ def createAccount():
     connection.commit()
     account_actions()
 
-
-
     ## if account already exists, ask to change info
 
 def logIn():
@@ -80,9 +78,9 @@ def account_actions():
     if action == 1:
         check_balance()
     if action == 2:
-        deposit()
+        deposit_money()
     if action == 3:
-        withdraw()
+        withdraw_money()
     if action == 4:
         account_settings()
 
@@ -121,7 +119,13 @@ def deposit_money():
         check_balance()
 
 def withdraw_money():
-    
+    print('--------- withdraw ---------')
+    amt = input('Please type in the amount of money you would like to withdraw: ')
+    select = "SELECT account_balance FROM user_info WHERE id = " + str(userID)
+    cursor.execute(select)
+    balance = cursor.fetchone()[0] #integer
+    if amt < balance:
+        cursor.execute("UPDATE user_info SER account_balance = account_balance - %s WHERE id = " + str(userID), (amt))
 
 ### ACCOUNT SETTINGS
 def account_settings():
