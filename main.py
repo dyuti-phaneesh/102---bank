@@ -1,8 +1,6 @@
 import mysql. connector
 import sys 
 
-
-
 ### LOG IN / CREATE ACCOUNT
 def checkLogInNumber(num):
     
@@ -172,9 +170,15 @@ def change_username_or_pswd():
     cursor.execute("SELECT * FROM user_info")
     result = cursor.fetchall()
     for row in result:
-        if row[0] == userID:
-            sql = "UPDATE user_info SET user_name = '%s', password = '%s'" % (Nusername, Npassword)
-        
+        if row[0] == userID and num2 == 1:
+            sql = "UPDATE user_info SET user_name = '%s' WHERE id = %s" % (Nusername, userID)
+            cursor.execute(sql)
+            connection.commit()
+        if row[0] == userID and num2 == 2:
+            sql = "UPDATE user_info SET password = '%s' WHERE id = %s" % (Npassword, userID)
+            cursor.execute(sql)
+            connection.commit()
+
         ## fix for num2
         if row[1] == Nusername and row[2] == Npassword and row[0] != userID:
             print("\nPlease select a different username of password.")
