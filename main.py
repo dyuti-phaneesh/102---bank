@@ -101,10 +101,12 @@ def check_balance():
                 if i == 'n' and balance > 0:
                     choice2 = input('Would you like to withdraw money?\n')
                     for i in choice2:
-                        if i == y: 
+                        if i == 'y': 
                             withdraw_money()
-                        if i == n:
+                        if i == 'n':
                             account_actions()
+                elif i == 'n':
+                    account_actions()
     
 
 def deposit_money():
@@ -113,7 +115,7 @@ def deposit_money():
     cursor.execute("SELECT * FROM user_info")
     result = cursor.fetchall()
     for row in result:
-        sql = "UPDATE user_info SET account_balance = account_balance + %s WHERE id = " + str(userID), (amt)
+        sql = "UPDATE user_info SET account_balance = account_balance + %s WHERE id = %s" % (amt, userID)
         cursor.execute(sql)
         connection.commit()
         check_balance()
@@ -121,11 +123,18 @@ def deposit_money():
 def withdraw_money():
     print('--------- withdraw ---------')
     amt = input('Please type in the amount of money you would like to withdraw: ')
-    select = "SELECT account_balance FROM user_info WHERE id = " + str(userID)
+    select = "SELECT account_balance FROM user_info WHERE id = %s" % (userID)
     cursor.execute(select)
     balance = cursor.fetchone()[0] #integer
-    if amt < balance:
-        cursor.execute("UPDATE user_info SER account_balance = account_balance - %s WHERE id = " + str(userID), (amt))
+    if int(amt) < int(balance):
+        sql = "UPDATE user_info SET account_balance = account_balance - %s WHERE id = %s" % (amt, userID)
+        ## FOR SOME REASON, IT IS ADDING TO THE ACCOUNT BALANCE, BY THE WRONG AMT
+
+        cursor.execute(sql)
+        connection.commit()
+    else:
+        print('There is not enough money in your account to be withdrawn.')
+        account_actions()
 
 ### ACCOUNT SETTINGS
 def account_settings():
